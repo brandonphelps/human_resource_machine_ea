@@ -77,16 +77,30 @@ def mail_room_main():
     
 def busy_mail_room_main():
     instruct_set = ['inbox', 'outbox', 'jump']
-    pop = generic_main(instruct_set, 0, 100, 30, 100, busy_mail_room_eval)
+    pop = generic_main(instruct_set, 0, 260, 50, 100, busy_mail_room_eval)
 
     for i in pop:
         print i.fitness
     best_answer = max(pop, key = lambda x: x.fitness)
     print "Best answer"
     print best_answer, best_answer.fitness
+    print "Final output"
+    print best_answer.result_outbox
+
+def copy_floor_main():
+    instruct_set = ['inbox', 'outbox', 'jump', 'copyfrom']
+    pop = generic_main(instruct_set, 0, 260, 50, 100, busy_mail_room_eval)
+
+    for i in pop:
+        print i.fitness
+    best_answer = max(pop, key = lambda x: x.fitness)
+    print "Best answer"
+    print best_answer, best_answer.fitness
+    print "Final output"
+    print best_answer.result_outbox
+    
 
 if __name__ == "__main__":
+    # mail_room_main()
     # busy_mail_room_main()
-    mail_room_main()
-
-    
+    copy_floor_main()
