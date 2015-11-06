@@ -10,11 +10,13 @@ class HRMInstruct(object):
         elif type(instruct) == HRMInstruct:
             self.copy(instruct)
 
-        self.jump_loc = -1
+        self.ref_value = -1
 
     def __str__(self):
         if self.instruct == "jump":
-            return str(self.instruct) + " " + str(self.jump_loc)
+            return str(self.instruct) + " " + str(self.ref_value)
+        elif self.instruct == "copyfrom":
+            return str(self.instruct) + " " + str(self.ref_value)
         return str(self.instruct)
 
     def copy(self, cpy):
@@ -65,6 +67,8 @@ class HRMProgram(object):
                 self._outbox()
             elif current_instruction.instruct == "jump":
                 self._jump()
+            elif current_instruction.instruct == "copyfrom":
+                self._copyfrom()
             else:
                 self.run_time_error = True
 
@@ -95,7 +99,17 @@ class HRMProgram(object):
             return
         
         instruct = self.asm.program[self.program_counter]
-        self.program_counter = instruct.jump_loc
+        self.program_counter = instruct.ref_value
+
+    def _copyfrom(self):
+        instruct = self.asm.program[self.program_counter]
+        if not self.floor_spaces[instruct.ref_value]:
+            print "Error no value on floor"
+            self.run_time_error = True
+            
+        self.holder = self.floor_spaces[instruct.ref_value]
+        
+        self._inc_prog_counter()
 
     def _inc_prog_counter(self):
         if self.program_counter + 1 < len(self.asm.program):
@@ -140,7 +154,9 @@ class HRMAsm(object):
         new_instruct = HRMInstruct(self.instruct_set[random.randint(0, len(self.instruct_set)-1)])
         
         if new_instruct.instruct == 'jump':
-            new_instruct.jump_loc = random.randint(0, len(self.program))
+            new_instruct.ref_value = random.randint(0, len(self.program))
+        elif new_instruct.instruct == 'copyfrom':
+            new_instruct.ref_value = random.randint(0, self.max_size-1)
         return new_instruct
 
 if __name__ == "__main__":

@@ -2,7 +2,7 @@
 import random
 
 from main import HRMAsm
-from HRMEvals import mail_room_eval, busy_mail_room_eval
+from HRMEvals import mail_room_eval, busy_mail_room_eval, copy_floor_eval
 
 def weighted_random_choice(population):
     tot_fit = 0
@@ -25,9 +25,9 @@ def generate_init_pop(size, struct_set, board_size):
     return pop
 
 
-def evaluate_fitness(population, fit_eval):
+def evaluate_fitness(population, initial_floor, fit_eval):
     for i in population:
-        fit_eval(i)
+        fit_eval(i, initial_floor)
         
 def cull_pop(population, pop_reduc):
     population.sort(key = lambda x: x.fitness)
@@ -52,20 +52,20 @@ def mutate_asm(individual):
     if random.random() < 0.2:
         individual.remove_random_instruction()
 
-def generic_main(instruct_set, board_size, pop_size, reduc_size, iterations, eval_func):
-    pop = generate_init_pop(pop_size, instruct_set, board_size)
+def generic_main(instruct_set, initial_floor, pop_size, reduc_size, iterations, eval_func):
+    pop = generate_init_pop(pop_size, instruct_set, len(initial_floor))
         
     for i in range(iterations):
-        evaluate_fitness(pop, eval_func)
+        evaluate_fitness(pop, initial_floor, eval_func)
         cull_pop(pop, reduc_size)
-        generate_gen(pop, reduc_size, instruct_set, board_size)
+        generate_gen(pop, reduc_size, instruct_set, len(initial_floor))
 
     return pop
 
 def mail_room_main():
     instruct_set = ['inbox', 'outbox']
 
-    pop = generic_main(instruct_set, 0, 100, 30, 100, mail_room_eval)
+    pop = generic_main(instruct_set, [], 100, 30, 100, mail_room_eval)
 
     print "Ending fitness"
     for i in pop:
@@ -77,7 +77,7 @@ def mail_room_main():
     
 def busy_mail_room_main():
     instruct_set = ['inbox', 'outbox', 'jump']
-    pop = generic_main(instruct_set, 0, 260, 50, 100, busy_mail_room_eval)
+    pop = generic_main(instruct_set, [], 260, 50, 100, busy_mail_room_eval)
 
     for i in pop:
         print i.fitness
@@ -89,7 +89,8 @@ def busy_mail_room_main():
 
 def copy_floor_main():
     instruct_set = ['inbox', 'outbox', 'jump', 'copyfrom']
-    pop = generic_main(instruct_set, 0, 260, 50, 100, busy_mail_room_eval)
+    floor_set = ['U', 'B', 'A', 'G', 'K', 'Z']
+    pop = generic_main(instruct_set, floor_set, 260, 50, 100, copy_floor_eval)
 
     for i in pop:
         print i.fitness
