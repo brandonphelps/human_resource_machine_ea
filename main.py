@@ -17,6 +17,12 @@ class HRMInstruct(object):
             return str(self.instruct) + " " + str(self.ref_value)
         elif self.instruct == "copyfrom":
             return str(self.instruct) + " " + str(self.ref_value)
+        elif self.instruct == "copyto":
+            return str(self.instruct) + " " + str(self.ref_value)
+        elif self.instruct == "add":
+            return str(self.instruct) + " " + str(self.ref_value)
+        elif self.instruct == "jump_0":
+            return str(self.instruct) + " " + str(self.ref_value)
         return str(self.instruct)
 
     def copy(self, cpy):
@@ -69,6 +75,12 @@ class HRMProgram(object):
                 self._jump()
             elif current_instruction.instruct == "copyfrom":
                 self._copyfrom()
+            elif current_instruction.instruct == "copyto":
+                self._copyto()
+            elif current_instruction.instruct == "add":
+                self._add()
+            elif current_instruction.instruct == "jump_0":
+                self._jump_zero()
             else:
                 self.run_time_error = True
 
@@ -104,12 +116,46 @@ class HRMProgram(object):
     def _copyfrom(self):
         instruct = self.asm.program[self.program_counter]
         if not self.floor_spaces[instruct.ref_value]:
-            print "Error no value on floor"
+            # print "Error no value on floor"
             self.run_time_error = True
-            
+            return 
+
         self.holder = self.floor_spaces[instruct.ref_value]
         
         self._inc_prog_counter()
+
+    def _copyto(self):
+        instruct = self.asm.program[self.program_counter]
+        self.floor_spaces[instruct.ref_value] = self.holder
+        self._inc_prog_counter()
+
+    def _add(self):
+        instruct = self.asm.program[self.program_counter]
+        if not self.floor_spaces[instruct.ref_value]:
+            # print "Error no value on floor"
+            self.run_time_error = True
+            return
+        if type(self.holder) != type(0):
+            self.run_time_error = True
+            return
+        self.holder = self.holder + self.floor_spaces[instruct.ref_value]
+        self._inc_prog_counter()
+
+    def _jump_zero(self):
+        if self.holder is None:
+            self.run_time_error = True
+            return
+        
+        if self.holder == 0:
+            self.jump_count += 1
+            if self.jump_count >= self.max_jump_count:
+                self.run_time_error = True
+                return
+            
+            instruct = self.asm.program[self.program_counter]
+            self.program_counter = instruct.ref_value
+        else:
+            self._inc_prog_counter()
 
     def _inc_prog_counter(self):
         if self.program_counter + 1 < len(self.asm.program):
@@ -155,8 +201,12 @@ class HRMAsm(object):
         
         if new_instruct.instruct == 'jump':
             new_instruct.ref_value = random.randint(0, len(self.program))
-        elif new_instruct.instruct == 'copyfrom':
+        elif new_instruct.instruct == 'copyfrom' or new_instruct.instruct == 'copyto' or new_instruct.instruct == "add":
             new_instruct.ref_value = random.randint(0, self.max_size-1)
+        elif new_instruct.instruct == 'jump_0':
+            new_instruct.ref_value == random.randint(0, len(self.program))
+            
+
         return new_instruct
 
 if __name__ == "__main__":
