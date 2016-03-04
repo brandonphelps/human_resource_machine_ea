@@ -2,7 +2,6 @@ import random
 
 HRM_full_instruction_set = {'inbox', 'outbox'}
 
-
 class HRMInstruct(object):
     def __init__(self, instruct):
         if type(instruct) == type(""):

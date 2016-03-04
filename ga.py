@@ -1,7 +1,6 @@
-
 import random
 
-from main import HRMAsm
+from models import HRMAsm
 from HRMEvals import mail_room_eval, busy_mail_room_eval, copy_floor_eval, scrambler_handler_eval, rainy_summer_eval, zero_exterminator_eval
 
 def weighted_random_choice(population):
@@ -150,9 +149,9 @@ def zero_exterminator():
 
     
 if __name__ == "__main__":
-    # mail_room_main()
+    mail_room_main()
     # busy_mail_room_main()
     # copy_floor_main()
     # scrambler_handler()
     # rainy_summer()
-    zero_exterminator()
+    # zero_exterminator()
