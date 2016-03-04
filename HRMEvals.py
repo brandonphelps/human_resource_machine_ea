@@ -14,7 +14,6 @@ def finished_eval(program):
         program.fitness = 1
 
 def mail_room_eval(individual, initial_floor):
-    
     program = HRMProgram(individual, [1,2,3], list(initial_floor))
 
     program.run()

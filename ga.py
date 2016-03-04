@@ -149,9 +149,9 @@ def zero_exterminator():
 
     
 if __name__ == "__main__":
-    mail_room_main()
+    # mail_room_main()
     # busy_mail_room_main()
     # copy_floor_main()
     # scrambler_handler()
-    # rainy_summer()
+    rainy_summer()
     # zero_exterminator()

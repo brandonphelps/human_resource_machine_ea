@@ -2,6 +2,8 @@ import random
 
 HRM_full_instruction_set = {'inbox', 'outbox'}
 
+# a single instance of an instruction
+# is basically an identifier
 class HRMInstruct(object):
     def __init__(self, instruct):
         if type(instruct) == type(""):
@@ -27,7 +29,7 @@ class HRMInstruct(object):
     def copy(self, cpy):
         self.instruct == cpy.instruct
 
-
+# probably unused
 class HRMBox(object):
     def __init__(self, data):
         self.data = data
@@ -35,7 +37,9 @@ class HRMBox(object):
     def __str__(self):
         return str(self.data)
 
-        
+
+# An entire program which contains a inbox, outbox, a list of instructions
+# has a max jump counter to limit the possible number of jumps that can be made
 class HRMProgram(object):
 
     def __init__(self, instruct_list, inbox, floor):
@@ -53,7 +57,6 @@ class HRMProgram(object):
             print "Error size incorrect"
 
     def run(self):
-        # print "Starting Run"
 
         while not self.finished_flag:
             if self.program_counter >= len(self.asm.program) or self.program_counter < 0:
@@ -167,6 +170,7 @@ class HRMProgram(object):
         return str(self.asm)
 
 
+# HRM ASM is a set of instructions 
 class HRMAsm(object):
     def __init__(self, instruct_set, board_size):
         self.max_size = board_size
@@ -183,7 +187,6 @@ class HRMAsm(object):
 
     def generate_asm(self):
         for i in range(random.randint(3, 10)):
-            # self.program.append(self.get_random_instruction())
             self.add_new_instruction()
 
     def add_new_instruction(self):
@@ -197,7 +200,6 @@ class HRMAsm(object):
     def get_random_instruction(self):
 
         new_instruct = HRMInstruct(self.instruct_set[random.randint(0, len(self.instruct_set)-1)])
-        
         if new_instruct.instruct == 'jump':
             new_instruct.ref_value = random.randint(0, len(self.program))
         elif new_instruct.instruct == 'copyfrom' or new_instruct.instruct == 'copyto' or new_instruct.instruct == "add":
