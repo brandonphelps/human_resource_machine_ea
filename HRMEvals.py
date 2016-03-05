@@ -1,4 +1,4 @@
-from main import HRMProgram, HRMAsm, HRMInstruct
+from models import HRMProgram, HRMAsm, HRMInstruct
 import time
 
 def length_eval(program):
@@ -60,7 +60,6 @@ def copy_floor_eval(individual, initial_floor):
     program.run()
 
     program.fitness = 0
-
 
     if len(program.outbox) == 3:
         program.fitness = 40.0    

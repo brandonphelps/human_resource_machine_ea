@@ -1,4 +1,5 @@
 import random
+import os
 
 from models import HRMAsm
 from HRMEvals import mail_room_eval, busy_mail_room_eval, copy_floor_eval, scrambler_handler_eval, rainy_summer_eval, zero_exterminator_eval
@@ -47,8 +48,14 @@ def generate_gen(population, pop_inc, struct_set, board_size):
 
     population.extend(new_pop)
 
+
 def point_crossover(individual):
     pass
+
+
+def breed_pop(popluation):
+    children = []
+
 
 def mutate_asm(individual):
     if random.random() < 0.2:
@@ -60,32 +67,37 @@ def generic_main(instruct_set, initial_floor, pop_size, reduc_size, iterations, 
     pop = generate_init_pop(pop_size, instruct_set, len(initial_floor))
         
     for i in range(iterations):
-        print "Iteration:", i
         evaluate_fitness(pop, initial_floor, eval_func)
         cull_pop(pop, reduc_size)
+        breed_pop(pop)
         generate_gen(pop, reduc_size, instruct_set, len(initial_floor))
-
+        if i % 1000 == 0:
+            print "Best fitness: ", (max(pop, key = lambda x: x.fitness)).fitness
     return pop
 
-def mail_room_main():
-    instruct_set = ['inbox', 'outbox']
+def print_solution(problem, solution):
+    solutions_folder = "HRMSolutions"
+    os.mkdir(solutions_folder)
+    solution_writer = open("%s/%s" % (solutions_folder, problem))
+    solution_writer.write(str(solution))
+    solution_writer.write("\n%s" % solution.fitness)
+    solution_writer.close()
 
+def mail_room_main():
+    print "Mail room main"
+    instruct_set = ['inbox', 'outbox']
     pop = generic_main(instruct_set, [], 100, 30, 100, mail_room_eval)
 
-    print "Ending fitness"
-    for i in pop:
-        print i.fitness    
     best_answer = max(pop, key = lambda x : x.fitness)
 
     print "Best answer"
     print best_answer, best_answer.fitness
     
 def busy_mail_room_main():
+    print "Busy mail room main"
     instruct_set = ['inbox', 'outbox', 'jump']
     pop = generic_main(instruct_set, [], 260, 50, 100, busy_mail_room_eval)
 
-    for i in pop:
-        print i.fitness
     best_answer = max(pop, key = lambda x: x.fitness)
     print "Best answer"
     print best_answer, best_answer.fitness
@@ -93,12 +105,11 @@ def busy_mail_room_main():
     print best_answer.result_outbox
 
 def copy_floor_main():
+    print "Copy floor main"
     instruct_set = ['inbox', 'outbox', 'jump', 'copyfrom']
     floor_set = ['U', 'J', 'X', 'G', 'B', 'E']
     pop = generic_main(instruct_set, floor_set, 260, 50, 4000, copy_floor_eval)
 
-    for i in pop:
-        print i.fitness
     best_answer = max(pop, key = lambda x: x.fitness)
     print "Best answer"
     print best_answer, best_answer.fitness
@@ -106,12 +117,11 @@ def copy_floor_main():
     print best_answer.result_outbox
     
 def scrambler_handler():
+    print "Scrambler handler"
     instruct_set = ['inbox', 'outbox', 'jump', 'copyfrom', 'copyto']
     floor_set = [None, None, None]
     pop = generic_main(instruct_set, floor_set, 260, 50, 4000, scrambler_handler_eval)
 
-    for i in pop:
-        print i.fitness
     best_answer = max(pop, key = lambda x: x.fitness)
     print "Best answer"
     print best_answer, best_answer.fitness
@@ -119,12 +129,11 @@ def scrambler_handler():
     print best_answer.result_outbox
     
 def rainy_summer():
+    print "Rainy summer"
     instruct_set = ['inbox', 'outbox', 'jump', 'copyfrom', 'copyto', 'add']
     floor_set = [None, None, None]
     pop = generic_main(instruct_set, floor_set, 1000, 500, 40000, rainy_summer_eval)
 
-    for i in pop:
-        print i.fitness
     best_answer = max(pop, key = lambda x: x.fitness)
     print "Best answer"
     print best_answer, best_answer.fitness
@@ -133,14 +142,15 @@ def rainy_summer():
 
 
 def zero_exterminator():
+    print "Zero exterminator"
     instruct_set = ['inbox', 'outbox', 'jump', 'copyfrom', 'copyto', 'add', 'jump_0']
     floor_set = [None, None, None,
                  None, None, None,
                  None, None, None]
     pop = generic_main(instruct_set, floor_set, 1000, 430, 40000, zero_exterminator_eval)
 
-    for i in pop:
-        print i.fitness
+    #for i in pop:
+    #    print i.fitness
     best_answer = max(pop, key = lambda x: x.fitness)
     print "Best answer"
     print best_answer, best_answer.fitness
@@ -149,9 +159,9 @@ def zero_exterminator():
 
     
 if __name__ == "__main__":
-    # mail_room_main()
-    # busy_mail_room_main()
-    # copy_floor_main()
-    # scrambler_handler()
+    mail_room_main()
+    busy_mail_room_main()
+    copy_floor_main()
+    scrambler_handler()
     rainy_summer()
-    # zero_exterminator()
+    zero_exterminator()

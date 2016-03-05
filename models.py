@@ -60,7 +60,7 @@ class HRMProgram(object):
 
         while not self.finished_flag:
             if self.program_counter >= len(self.asm.program) or self.program_counter < 0:
-                print "Error with program counter", self.program_counter, len(self.asm.program)
+                # print "Error with program counter", self.program_counter, len(self.asm.program)
                 self.run_time_error = True
 
             if self.run_time_error:
@@ -185,6 +185,7 @@ class HRMAsm(object):
             msg += "%s\n" % i
         return msg
 
+    # creates some random number of instructions
     def generate_asm(self):
         for i in range(random.randint(3, 10)):
             self.add_new_instruction()
