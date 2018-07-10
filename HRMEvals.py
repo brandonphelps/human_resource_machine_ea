@@ -155,7 +155,7 @@ def zero_exterminator_eval(individual, initial_floor):
 
     
 def output_data(individual):
-    print individual.fitness
+    print(individual.fitness)
 
 def mail_room_test():
     t = HRMAsm(['inbox', 'outbox'], 0)
@@ -168,7 +168,7 @@ def mail_room_test():
     
     mail_room_eval(t)
 
-    print t.fitness
+    print(t.fitness)
 
 def busy_mail_room_test():
     t = HRMAsm(['inbox', 'outbox', 'jump'], 0)
@@ -179,7 +179,7 @@ def busy_mail_room_test():
     t.program.append(jump)
     busy_mail_room_eval(t)
 
-    print t.fitness
+    print(t.fitness)
 
 
 def copy_floor_test():
@@ -204,7 +204,7 @@ def copy_floor_test():
 
     copy_floor_eval(t, floor_set)
     
-    print t.fitness
+    print(t.fitness)
 
 if __name__ == "__main__":
     # busy_mail_room_test()

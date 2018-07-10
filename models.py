@@ -27,7 +27,8 @@ class HRMInstruct(object):
         return str(self.instruct)
 
     def copy(self, cpy):
-        self.instruct == cpy.instruct
+        self.instruct = cpy.instruct
+        self.ref_value = cpy.ref_value
 
 # probably unused
 class HRMBox(object):
@@ -54,7 +55,7 @@ class HRMProgram(object):
         self.max_jump_count = 100
         self.jump_count = 0
         if len(self.floor_spaces) != self.asm.max_size:
-            print "Error size incorrect"
+            print("Error size incorrect")
 
     def run(self):
 
@@ -207,14 +208,19 @@ class HRMAsm(object):
             new_instruct.ref_value = random.randint(0, self.max_size-1)
         elif new_instruct.instruct == 'jump_0':
             new_instruct.ref_value == random.randint(0, len(self.program))
-            
 
         return new_instruct
+
+    def add_instruction_from(self, hrmInstruct):
+        k = HRMInstruct(hrmInstruct)
+        k.ref_value = hrmInstruct.ref_value # why is the nessasary??????  TODO 
+        self.program.append(k)
+
 
 if __name__ == "__main__":
     p = HRMAsm(['inbox', 'outbox'], 0)
     p.generate_asm()
-    print p.program
-    print p
+    print(p.program)
+    print(p)
     
     
